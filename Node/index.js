@@ -3,6 +3,7 @@ const app = express();
 const port = 4000;
 const bodyParser = require("body-parser");
 const { User } = require("./models/User");
+const { auth } = require("./middleware/auth");
 const config = require("./config/key");
 const cookieParser = require("cookie-parser");
 
@@ -33,7 +34,7 @@ app.get("/", (req, res) =>
   res.send("4000번에 서버 실행중!! 노드몬 테스트!!!.. 잘 작동하네요")
 );
 
-app.post("/register", (req, res) => {
+app.post("/api/user/register", (req, res) => {
   //회원가입에 필요한 정보들을 클라이언트에서 받아
   //DB에 저장한다.
   const user = new User(req.body);
@@ -45,7 +46,7 @@ app.post("/register", (req, res) => {
   });
 });
 
-app.post("/login", (req, res) => {
+app.post("/api/user/login", (req, res) => {
   //1. 데이터 베이스에 요청된 이메일이 있는지 찾는다
   User.findOne({ email: req.body.email }, (err, user) => {
     if (!user) {
@@ -74,6 +75,19 @@ app.post("/login", (req, res) => {
         }
       });
     });
+  });
+});
+
+app.get("/api/user/auth", auth, (req, res) => {
+  res.status(200).json({
+    _id: req.user._id,
+    isAdmin: req.user.role === 0 ? false : true,
+    isAuth: true,
+    email: req.user.email,
+    name: req.user.name,
+    lastname: req.user.lastname,
+    role: req.user.role,
+    image: req.user.image,
   });
 });
 
