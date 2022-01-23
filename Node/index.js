@@ -91,6 +91,17 @@ app.get("/api/user/auth", auth, (req, res) => {
   });
 });
 
+//로그아웃 기능 구현
+app.get("/api/user/logout", auth, (req, res) => {
+  User.findOneAndUpdate({ _id: req.user._id }, { token: "" }, (err, user) => {
+    if (err) {
+      return res.json({ success: false, err });
+    } else {
+      return res.status(200).send({ success: true });
+    }
+  });
+});
+
 app.listen(port, () => {
   console.log(`App listening port on ${port}`);
 });

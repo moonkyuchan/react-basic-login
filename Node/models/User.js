@@ -79,7 +79,7 @@ userSchema.methods.generateToken = function (callback) {
   });
 };
 
-userSchema.staticc.findByToken = function (token, callback) {
+userSchema.statics.findByToken = function (token, callback) {
   var user = this;
 
   // token을 디코드 한다
