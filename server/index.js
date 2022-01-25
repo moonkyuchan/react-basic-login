@@ -6,6 +6,16 @@ const { User } = require("./models/User");
 const { auth } = require("./middleware/auth");
 const config = require("./config/key");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
+
+//cors에러 허용해주기~
+let cors_origin = ["http://localhost:3000"];
+app.use(
+  cors({
+    orgin: cors_origin, // 허락하는 주소
+    credentials: true, // true는 설정한 내용을 Response 헤더에 추가
+  })
+);
 
 //application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -13,8 +23,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
+// mongoose 설정!
 const mongoose = require("mongoose");
-const { JsonWebTokenError } = require("jsonwebtoken");
 mongoose
   .connect(config.mongoURI, {
     useNewUrlParser: true,
@@ -30,6 +40,7 @@ mongoose
     console.log(err);
   });
 
+//API통신
 app.get("/", (req, res) =>
   res.send("4000번에 서버 실행중!! 노드몬 테스트!!!.. 잘 작동하네요")
 );
@@ -78,6 +89,7 @@ app.post("/api/user/login", (req, res) => {
   });
 });
 
+//Auth 기능
 app.get("/api/user/auth", auth, (req, res) => {
   res.status(200).json({
     _id: req.user._id,
